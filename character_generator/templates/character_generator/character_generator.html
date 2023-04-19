@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div x-data="{ reroll: false }">
+    <h1 class="w3-center">Character Generator</h1>
+    <div class="w3-container w3-card w3-padding">
+            <form id="characterForm" method="post" action="{% url 'generate_character' %}" hx-post="{% url 'generate_character' %}">
+            {% csrf_token %}
+            <div class="w3-row w3-margin-bottom">
+                <div class="w3-col s6">
+                    <label for="{{ form.first_name.auto_id }}" class="w3-text-theme">First Name:</label>
+                    <input type="text" x-bind:disabled="!reroll" name="{{ form.first_name.html_name }}" id="{{ form.first_name.auto_id }}" value="{{ form.first_name.value }}" class="w3-input w3-border" />
+                </div>
+                <div class="w3-col s6">
+                    <label for="{{ form.last_name.auto_id }}" class="w3-text-theme">Last Name:</label>
+                    <input type="text" x-bind:disabled="!reroll" name="{{ form.last_name.html_name }}" id="{{ form.last_name.auto_id }}" value="{{ form.last_name.value }}" class="w3-input w3-border" />
+                </div>
+            </div>
+
+            <div class="w3-row w3-margin-bottom">
+                <div class="w3-col s6">
+                    <label for="{{ form.melee_weapon.auto_id }}" class="w3-text-theme">Melee Weapon:</label>
+                    <input type="text" x-bind:disabled="!reroll" name="{{ form.melee_weapon.html_name }}" id="{{ form.melee_weapon.auto_id }}" value="{{ form.melee_weapon.value }}" class="w3-input w3-border" />
+                </div>
+                <div class="w3-col s6">
+                    <label for="{{ form.skills.auto_id }}" class="w3-text-theme">Skills:</label>
+                    <input type="text" x-bind:disabled="!reroll" name="{{ form.skills.html_name }}" id="{{ form.skills.auto_id }}" value="{{ form.skills.value }}" class="w3-input w3-border" />
+                </div>
+            </div>
+
+            <div class="w3-row w3-margin-bottom">
+                <div class="w3-col s6">
+                    <label for="{{ form.appearance.auto_id }}" class="w3-text-theme">Appearance:</label>
+                    <input type="text" x-bind:disabled="!reroll" name="{{ form.appearance.html_name }}" id="{{ form.appearance.auto_id }}" value="{{ form.appearance.value }}" class="w3-input w3-border" />
+                </div>
+                <div class="w3-col s6">
+                    <label for="{{ form.physical_details.auto_id }}" class="w3-text-theme">Physical Details:</label>
+                    <input type="text" x-bind:disabled="!reroll" name="{{ form.physical_details.html_name }}" id="{{ form.physical_details.auto_id }}" value="{{ form.physical_details.value }}" class="w3-input w3-border" />
+                </div>
+            </div>
+            <div class="w3-row w3-margin-bottom">
+                            <div class="w3-col s6">
+                    <label for="{{ form.personality.auto_id }}" class="w3-text-theme">Personality:</label>
+                    <input type="text" x-bind:disabled="!reroll" name="{{ form.personality.html_name }}" id="{{ form.personality.auto_id }}" value="{{ form.personality.value }}" class="w3-input w3-border" />
+                </div>
+                <div class="w3-col s6">
+                    <label for="{{ form.clothing.auto_id }}" class="w3-text-theme">Clothing:</label>
+                    <input type="text" x-bind:disabled="!reroll" name="{{ form.clothing.html_name }}" id="{{ form.clothing.auto_id }}" value="{{ form.clothing.value }}" class="w3-input w3-border" />
+                </div>
+            </div>
+
+            <div class="w3-row w3-margin-bottom">
+                <div class="w3-col s6">
+                    <label for="{{ form.secret.auto_id }}" class="w3-text-theme">Secret:</label>
+                    <input type="text" x-bind:disabled="!reroll" name="{{ form.secret.html_name }}" id="{{ form.secret.auto_id }}" value="{{ form.secret.value }}" class="w3-input w3-border" />
+                </div>
+                <div class="w3-col s6">
+                    <label for="{{ form.background.auto_id }}" class="w3-text-theme">Background:</label>
+                    <input type="text" x-bind:disabled="!reroll" name="{{ form.background.html_name }}" id="{{ form.background.auto_id }}" value="{{ form.background.value }}" class="w3-input w3-border" />
+                </div>
+            </div>
+
+{#            <div class="w3-row w3-margin-bottom">#}
+{#                <div class="w3-col s12">#}
+{#                    <label class="w3-text-theme">Ability Score:</label>#}
+{#                    <ul>#}
+{#                        <li>Heart: {{ form.ability_scores.value.0.heart }}</li>#}
+{#                        <li>Soul: {{ form.ability_scores.value.0.soul }}</li>#}
+{#                        <li>Body: {{ form.ability_scores.value.0.body }}</li>#}
+{#                    </ul>#}
+{#                </div>#}
+{#            </div>#}
+
+            <div class="w3-row w3-margin-bottom">
+                <div class="w3-col s6">
+                    <input type="submit" value="Accept Character" class="w3-btn w3-theme w3-block" />
+                </div>
+                <div class="w3-col s6">
+                    <button type="button" @click="rerollCharacter()" class="w3-btn w3-theme w3-block">Re-Roll</button>
+                </div>
+            </div>
+            </form>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+async function rerollCharacter() {
+    let characterForm = document.getElementById("characterForm");
+    let formData = new FormData(characterForm);
+    formData.append('reroll', 'true');  // Add this line to include the 'reroll' field in the POST data
+
+    let response = await fetch("{% url 'generate_character' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'HX-Request': 'true',
+        },
+        body: new URLSearchParams(formData),
+    });
+
+    let data = await response.json();
+
+    document.getElementById("id_first_name").value = data.first_name;
+    document.getElementById("id_last_name").value = data.last_name;
+    document.getElementById("id_ability_scores").value = `Heart: ${data.ability_scores.heart} Soul: ${data.ability_scores.soul} Body: ${data.ability_scores.body}`;
+    document.getElementById("id_melee_weapon").value = data.melee_weapon;
+    document.getElementById("id_skills").value = data.skills;
+    document.getElementById("id_appearance").value = data.appearance;
+    document.getElementById("id_physical_details").value = data.physical_details;
+    document.getElementById("id_personality").value = data.personality;
+    document.getElementById("id_clothing").value = data.clothing;
+    document.getElementById("id_secret").value = data.secret;
+    document.getElementById("id_background").value = data.background;
+}
+
+</script>
+{% endblock %}
+
+
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="w3-container">
+    <h2>Login</h2>
+
+    {% include 'registration/login_form.html' %}
+
+</div>
+<script src="https://unpkg.com/alpinejs@v2.x.x/dist/alpine.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.6.0"></script>
+{% endblock %}
