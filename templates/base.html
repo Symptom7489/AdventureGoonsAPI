@@ -11,8 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="ag-styles.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <script src="https://kit.fontawesome.com/e512fadf8f.js" crossorigin="anonymous"></script>
 
@@ -25,7 +24,7 @@
     <!-- Top nav bar -->
     <div class="w3-bar w3-light-grey">
         <a href="{% url 'home' %}" class="w3-bar-item">
-            <img src="{{ logo_url }}" alt="Logo" height="50">
+            <img src="{% static 'images/1.jpg' %}" height="50px" alt="Adventure Goons">
         </a>
         <a class="w3-bar-item w3-button" href="{% url 'home' %}">Home</a>
         <a class="w3-bar-item w3-button" href="{% url 'about' %}">About</a>
